@@ -1,0 +1,81 @@
+html,body,.container {
+	height: 100%;
+}
+.container {
+
+}
+/*左侧导航栏*/
+.container > .left {
+	width: 220px;
+	background-color: #8db33a;
+	height: 100%;
+	float: left;
+	color: #fff;
+}
+.container > .left a {
+	color: #fff;
+	font-size: 16px;
+	margin-left: 15px;
+}
+/*标题首页*/
+.left > .title {
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 4em;
+	border-bottom: 1px solid #ededed;
+	cursor:pointer;
+}
+.left >ul.left_nav {
+
+}
+.left >ul.left_nav > li{
+	text-align: center;
+	line-height: 3em;
+	border-bottom: 1px solid #ededed
+}
+.left >ul.left_nav > li.current{
+	background-color: #424242;
+}
+
+
+/*右侧*/
+.container > .right {
+	box-sizing: border-box;
+	height: 100%;
+	background-color: #ededed;
+	margin-left: 220px;
+	padding: 10px 20px;
+}
+.container > .right >.content {
+	border-radius: 5px;
+	background-color: #ffffff;
+	height: 100%;
+	padding: 1em;
+	box-sizing: border-box;
+}
+/*头部栏*/
+.container > .right >.content >.mb_nav{
+	border-bottom: 1px solid #ccc;
+	line-height: 2.5em;
+	margin-bottom: .5em;
+	font-size: 16px;
+}
+.mb_nav span{
+	font-size: 14px;
+	color: #807d7d;
+}
+.mb_nav .span_m{
+	font-size: 18px;
+}
+
+/*主体内容*/
+.container > .right >.content >.wrapper{
+	box-sizing: border-box;
+	padding: 1em;
+}
+
+
+
+
+

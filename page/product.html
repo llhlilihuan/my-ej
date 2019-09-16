@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+<script type="text/javascript" src="../jQuery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.js"></script>
+<script>
+	var baseURL = "http://134.175.100.63:6677";
+
+	//加载数据	begin
+	initData();
+	function initData(){
+		var url = baseURL + "/product/findAll";
+		$.get(url,function(result){
+			if(result.status === 200){
+				$("#product_tbl > tbody").empty();
+				result.data.forEach(function(item){
+					$(`<tr>
+						<td class="text-center">
+							<input type="checkbox" value="`+item.id+`">
+						</td>
+						<td>`+item.name+`</td>
+						<td>`+item.description+`</td>
+						<td>`+item.price+`</td>
+						<td>`+item.status+`</td>
+						<td>`+item.photo+`</td>
+						<td>`+item.categoryId+`</td>
+						<td>
+							<a href="" class="btn btn-link btn-sm">删除</a>
+							<a href="" class="btn btn-link btn-sm">修改</a>
+							<a href="" class="btn btn-link btn-sm">详情</a>
+						</td>
+					</tr>`).appendTo("#product_tbl>tbody");
+				});
+			}else{
+				alter("error!")
+			}
+		});
+	}
+	//加载数据 end
+
+</script>
+<body>
+	<div class="container">
+		<div class="btns mb-2">
+			<button id="btn_add" class="btn">添加</button>
+		</div>
+
+		<!-- table begin -->
+		<table class="table" id="product_tbl">
+			<thead>
+				<tr>
+					<td width="60px">编号</td>
+					<td>商品名称</td>
+					<td>商品描述</td>
+					<td>价格</td>
+					<td>状态</td>
+					<td>所属分类</td>
+					<td>照片</td>
+					<td>操作</td>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<!-- table end -->
+	</div>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<link rel="stylesheet" href="http://at.alicdn.com/t/font_1391309_su8myxmtxek.css">
+<!-- <style>
+	a{
+		color: #484848;
+		text-decoration: none;
+	}
+	a:hover{
+		color: #c6b677;
+		text-decoration:underline;
+	}
+	.btns {
+		margin-bottom: 5px;
+		float:left;
+	}
+	.btn {
+		display: inline-block;
+		padding: 0.5em 1.5em;
+		border-radius: 3px;
+		border:1px solid #c6e677;
+		color:#484848;
+		cursor :pointer;
+		font-weight: bold;
+	}
+	/*搜索框*/
+	.search{
+		float: right;
+		width: 200px;
+		border:1px solid #c6e677;
+		border-radius: 5px;
+		padding: 0 10px;
+		line-height: 30px;
+		margin-bottom: 5px;
+	}
+	.search input{
+		height: 29px;
+		border: none;
+	}
+	.search .iconfont{
+		font-size: 20px;
+		cursor: pointer;
+	}
+
+	
+	table.table {
+		box-sizing: border-box;
+		width: 100%;
+		border-collapse: collapse;
+	}
+	table.table td ,
+	table.table th {
+		border: 1px solid #ccc;
+		line-height: 2em;
+		text-align: center;
+		color: #484848;
+	}
+	table.table td:last-child{
+		width:200px;
+	}
+	table.table th{
+		background-color: #c6e677;
+		color: #484848;
+	}
+
+	table.table tr.current {
+		background-color: #ededed;
+	}
+	table.table.checkbox{
+		background-color: #fff;
+		border:1px solid  #c6e677;
+	}
+
+
+	.none {
+		display: none;
+	}
+    .hidden{
+		display: none;
+	}
+</style> -->
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+<script src="../jQuery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="../bootstrap/js/bootstrap.js"></script>
+
+<!-- script begin-->
+<script>
+	var baseURL = "http://134.175.100.63:6677";
+
+	//初始化数据，将数据添加到表格中
+	initData();
+	function initData(){
+		var url = baseURL + "/waiter/findAll";
+		$.get(url,function(result){
+			if(result.status === 200){
+				$("#waiter_table tbody").empty();
+				result.data.forEach(function(item){
+					$("#waiter_table tbody").append($(
+						`<tr>
+							<td><input type="checkbox" value="`+item.id+`"></td>
+							<td>`+item.telephone+`</td>
+							<td>`+item.password+`</td>
+							<td>`+item.realname+`</td>
+							<td>`+item.idcard+`</td>
+							<td>`+item.status+`</td>
+							<td>`+item.photo+`</td>	
+							<td>
+								<a class="btn_del" href="javascript:void(0)">
+									删除
+								</a>
+								<a class="btn_upd" href="javascript:void(0)">
+									修改
+								</a>
+								<a class="btn_mes" href="javascript:void(0)">
+									详情
+								</a>
+							</td>								
+						</tr>`
+					));
+				});
+			}
+		});
+	}
+
+	//模态框 begin
+	//关闭模态框 begin
+	function closewaiterModal(){
+		$("#waiterModal").modal("hide");
+	}
+	//关闭模态框 end
+	//提交表单 begin
+	function submitwaiter(){
+		//1.获取参数
+		var telephone = $("#waiter_form input[name=telephone]").val();
+		var password = $("#waiter_form input[name=password]").val();
+		var realname = $("#waiter_form input[name=realname]").val();
+		var idcard = $("#waiter_form input[name=idcard]").val();
+		var status = $("#waiter_form input[name=status]").val();
+		var photo = $("#waiter_form input[name=photo]").val();
+		//2.ajax
+		var url = baseURL+"/waiter/saveOrUpdate";
+		var data={
+			telephone:telephone,
+			password:password,
+			realname:realname,
+			idcard:idcard,
+			status:status,
+			photo:photo
+		};
+		$.post(url,data,function(result){
+			if(result.status === 200){
+				closewaiterModal();
+				initData();
+			} else {
+				alert(result.message);
+			}
+		});
+	}
+	//提交表单 end
+
+	//文档加载完毕后执行
+	$(function(){
+		//1.初始化数据
+		initData();
+		//2.为添加按钮绑定事件
+		$("#btn_add_waiter").click(function(){
+			$("#waiterModal").modal("show");
+		});
+	});
+	//模态框 end
+
+	//通过id删除 begin
+	$(function(){
+		// 初始化加载数据
+		initData();
+		// 为删除、修改、详情按钮绑定事件
+		$("#waiter_table tbody").on("click","a",function(){
+			if(this.className === "btn_del"){	
+				//alert("确定删除此信息吗？")
+				// 删除按钮
+				var url =baseURL+"/waiter/deleteById";
+				// 获取需要删除的id
+				var id = $(this).parents("tr").find("input").val();
+				console.log(id);
+				// 请求方式对象传递
+				var data = {id:id};
+				// 调用jQuery的ajax方法删除第一条数据并初始化数据
+				alert("确定删除此信息吗？");
+				$.get(url,data,function(result){
+					//console.log(result);
+					alert(result.message);
+					initData();
+				});
+				$(this).parents("tr").remove("tr");
+				alert(result.message);
+			}else if(this.className === "btn_upd"){
+				alert("更新数据！")
+			}else if(this.className === "btn_mes"){
+				alert("了解详情！")
+			}
+		});
+	});
+
+	//通过id删除 end
+
+</script>
+<!-- script end-->
+
+<!-- html begin -->
+<!-- 容器 begin-->
+<div class="container-fluid">
+	<!-- 按钮 begin -->
+	<button id="btn_add_waiter" class="btn btn-sm mb-3">添加</button>
+	<button id="btn_batchDel_waiter" class="btn btn-sm mb-3">批量删除</button>
+	<button id="btn_export_waiter" class="btn btn-sm mb-3">导出</button>
+	<!-- 按钮 end -->
+	<!-- 表格 begin-->
+	<table class="table" id="waiter_table">
+		<thead>
+			<tr>
+				<td>编号</td>
+				<td>手机</td>
+				<td>密码</td>
+				<td>姓名</td>
+				<td>员工号</td>
+				<td>状态</td>
+				<td>头像</td>
+				<td>操作</td>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	<!-- 表格 end-->	
+</div>
+<!-- 容器 end-->
+<!-- 模态框 begin-->
+<div class="modal fade" id="waiterModal" tabindex="-1">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<!--模态框头部 -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">添加客户信息</h5>
+				<button type="button" class="close" onclick="closewaiterModal()">
+					<span>&times;</span>
+				</button>
+			</div>
+			<!-- /模态框头部 -->
+			<div class="modal-body">
+				<!-- 表单 begin-->
+				<form action="/register" id="waiter_form">
+					<!-- 手机号 begin -->
+					<div class="form-group row">
+						<label for="input_telephone" class="col-2 text-right">手机号</label>
+						<div class="col-10" >
+							<input id="input_telephone" name="telephone" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 手机号 end -->
+					<!-- 密码 begin -->
+					<div class="form-group row">
+						<label for="input_password" class="col-2 text-right">密码</label>
+						<div class="col-10" >
+							<input id="input_password" name="password" type="password" class="form-control">
+						</div>
+					</div>
+					<!-- 密码 end -->
+					<!-- 姓名 begin -->
+					<div class="form-group row">
+						<label for="input_name" class="col-2 text-right">姓名</label>
+						<div class="col-10" >
+							<input id="input_name" name="realname" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 姓名 end -->
+					<!-- 员工号 begin -->
+					<div class="form-group row">
+						<label for="input_idcard" class="col-2 text-right">员工号</label>
+						<div class="col-10" >
+							<input id="input_idcard" name="idcard" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 员工号 end -->
+					<!-- 状态 begin -->
+					<div class="form-group row">
+						<label for="input_status" class="col-2 text-right">状态</label>
+						<div class="col-10" >
+							<input id="input_status" name="status" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 状态 end -->
+					<!-- 照片 begin -->
+					<div class="form-group row">
+						<label for="input_photo" class="col-2 text-right">照片</label>
+						<div class="col-10" >
+							<input id="input_photo" name="photo" type="file" class="form-control">
+						</div>
+					</div>
+					<!-- 照片 end -->
+				</form>
+				<!-- 表单 end-->
+			</div>
+			<!-- 取消保存按钮 begin-->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" onclick="closewaiterModal()">取消</button>
+				<button type="button" class="btn btn-primary" onclick="submitwaiter()">保存</button>
+			</div>
+			<!-- 取消保存按钮 end-->
+		</div>
+	</div>
+</div>
+<!-- 模态框 end-->
+
+<!-- html end -->
