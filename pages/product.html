@@ -1,65 +1,252 @@
-<link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
-<script type="text/javascript" src="../jQuery/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="../bootstrap/js/bootstrap.js"></script>
+<link rel="stylesheet" href="./css/pages.css">
+<!-- script begin-->
 <script>
 	var baseURL = "http://134.175.100.63:6677";
 
-	//加载数据	begin
-	initData();
-	function initData(){
+	//初始化数据，将数据添加到表格中
+	function loadData(){
 		var url = baseURL + "/product/findAll";
 		$.get(url,function(result){
 			if(result.status === 200){
-				$("#product_tbl > tbody").empty();
+				$("#product_table tbody").empty();
 				result.data.forEach(function(item){
-					$(`<tr>
-						<td class="text-center">
-							<input type="checkbox" value="`+item.id+`">
-						</td>
+					$("#product_table tbody").append(`<tr>
+						<td><input type="checkbox" value="`+item.id+`"></td>
 						<td>`+item.name+`</td>
 						<td>`+item.description+`</td>
 						<td>`+item.price+`</td>
 						<td>`+item.status+`</td>
 						<td>`+item.photo+`</td>
-						<td>`+item.categoryId+`</td>
+						<td>`+item.categoryId+`</td>		
 						<td>
-							<a href="" class="btn btn-link btn-sm">删除</a>
-							<a href="" class="btn btn-link btn-sm">修改</a>
-							<a href="" class="btn btn-link btn-sm">详情</a>
-						</td>
-					</tr>`).appendTo("#product_tbl>tbody");
+							<a class="btn_del" href="javascript:void(0)">
+								<i class="iconfont icon-shanchu"></i>
+							</a>
+							<a class="btn_upd" href="javascript:void(0)">
+								<i class="iconfont icon-xiugai"></i>
+							</a>
+							<a class="btn_mes" href="javascript:void(0)">
+								<i class="iconfont icon-xiangqing"></i>
+							</a>
+						</td>									
+					</tr>`);
 				});
-			}else{
-				alter("error!")
 			}
 		});
 	}
-	//加载数据 end
+
+	//模态框 begin
+	//关闭模态框 begin
+
+	function closeproductModal(){
+		$("#productModal").modal("hide");
+	}
+	//关闭模态框 end
+	//提交表单 begin
+	function submitproduct(){
+		//1.获取参数
+		var telephone = $("#product_form input[name=telephone]").val();
+		var password = $("#product_form input[name=password]").val();
+		var realname = $("#product_form input[name=realname]").val();
+		var status = $("#product_form input[name=status]").val();
+		var photo = $("#product_form input[name=photo]").val();
+		//2.ajax
+		var url = baseURL+"/product/saveOrUpdate";
+		var data={
+			telephone:telephone,
+			password:password,
+			realname:realname,
+			status:status,
+			photo:photo
+		};
+		$.post(url,data,function(result){
+			if(result.status === 200){
+				closeproductModal();
+				loadData();
+			} else {
+				alert(result.message);
+			}
+		});
+	}
+	//提交表单 end
+
+	//文档加载完毕后执行
+	$(function(){
+		//1.初始化数据
+		loadData();
+		//2.为添加按钮绑定事件
+		$("#btn_add").click(function(){
+			$("#productModal").modal("show");
+		});
+	});
+	//模态框 end
+
+	//通过id删除 begin
+	$(function(){
+		// 初始化加载数据
+		loadData();
+		// 为删除、修改、详情按钮绑定事件
+		$("#product_table tbody").on("click","a",function(){
+			//alert(1);	//测试是否选中
+			console.log(this);
+			if(this.className == "btn_del"){	
+				//alert("确定删除此信息吗？")
+				// 删除按钮
+				var url =baseURL+"/product/deleteById";
+				// 获取需要删除的id
+				var id = $(this).parents("tr").find("input").val();
+				console.log(id);
+				// 请求方式对象传递
+				var data = {id:id};
+				// 调用jQuery的ajax方法删除第一条数据并初始化数据
+				alert("确定删除此信息吗？");
+				$.get(url,data,function(result){
+					//console.log(result);
+					alert(result.message);
+					loadData();
+				});
+				$(this).parents("tr").remove("tr");
+				alert(result.message);
+			}
+			if(this.className == "btn_upd"){
+				var url = baseURL + "/product/saveOrUpdate";
+				var data={
+					telephone:telephone,
+					password:password,
+					realname:realname,
+					status:status,
+					photo:photo
+				};
+				// 提交数据
+				$.post(url,data,function(result){
+					if (result.status === 200) {
+						// 修改成功 隐藏模态框
+		    			$("#productModal").modal("hide");
+		    			alert(result.message);
+		    		}
+				});
+			}
+			if(this.className == "btn_mes"){
+				alert("了解详情！")
+			}
+		});
+	});
+
+	//通过id删除 end
 
 </script>
-<body>
-	<div class="container">
-		<div class="btns mb-2">
-			<button id="btn_add" class="btn">添加</button>
-		</div>
+<!-- script end-->
 
-		<!-- table begin -->
-		<table class="table" id="product_tbl">
-			<thead>
-				<tr>
-					<td width="60px">编号</td>
-					<td>商品名称</td>
-					<td>商品描述</td>
-					<td>价格</td>
-					<td>状态</td>
-					<td>所属分类</td>
-					<td>照片</td>
-					<td>操作</td>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<!-- table end -->
+<!-- html begin -->
+<!-- 容器 begin-->
+<div class="product">
+	<!-- 顶部按钮 begin -->
+	<div class="top row">
+		<!-- 添加\删除\导出按钮 -->
+		<div class="btns col-3">
+			<div class="btns">
+				<button id="btn_add" class="btn btn-sm mb-3">添加</button>
+				<button id="btn_batchDel" class="btn btn-sm mb-3">批量删除</button>
+				<button id="btn_export" class="btn btn-sm mb-3">导出</button>
+			</div>
+		</div>
+		<!-- 模糊查询单行表单 -->
+		<form class="form-inline ml-auto search">
+			<div class="form-group mr-sm-1">
+				<input class="form-control" type="search" placeholder="请输入..." id="input_search">
+			</div>
+			<div class="form-group mr-sm-1">
+				<i class="iconfont icon-sousuo"></i>
+			</div>
+		</form>
 	</div>
-</body>
-</html>
+	<!-- 顶部按钮 end -->
+	<!-- 表格 begin-->
+	<table class="table" id="product_table">
+		<thead>
+			<tr>
+				<td width="60px"><input type="checkbox" id="checkbox_all"></td>
+				<td>商品名称</td>
+				<td>商品描述</td>
+				<td>价格</td>
+				<td>状态</td>
+				<td>所属分类</td>
+				<td>照片</td>
+				<td width="200px">操作</td>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	<!-- 表格 end-->	
+</div>
+<!-- 容器 end-->
+<!-- 模态框 begin-->
+<div class="modal fade hidden" id="productModal" tabindex="-1">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<!--模态框头部 -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">添加客户信息</h5>
+				<button type="button" class="close" onclick="closeproductModal()">
+					<span>&times;</span>
+				</button>
+			</div>
+			<!-- /模态框头部 -->
+			<div class="modal-body">
+				<!-- 表单 begin-->
+				<form action="/register" id="product_form">
+					<!-- 手机号 begin -->
+					<div class="form-group row">
+						<label for="input_telephone" class="col-2 text-right">手机号</label>
+						<div class="col-10" >
+							<input id="input_telephone" name="telephone" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 手机号 end -->
+					<!-- 密码 begin -->
+					<div class="form-group row">
+						<label for="input_password" class="col-2 text-right">密码</label>
+						<div class="col-10" >
+							<input id="input_password" name="password" type="password" class="form-control">
+						</div>
+					</div>
+					<!-- 密码 end -->
+					<!-- 姓名 begin -->
+					<div class="form-group row">
+						<label for="input_name" class="col-2 text-right">姓名</label>
+						<div class="col-10" >
+							<input id="input_name" name="realname" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 姓名 end -->
+					<!-- 状态 begin -->
+					<div class="form-group row">
+						<label for="input_status" class="col-2 text-right">状态</label>
+						<div class="col-10" >
+							<input id="input_status" name="status" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 状态 end -->
+					<!-- 照片 begin -->
+					<div class="form-group row">
+						<label for="input_photo" class="col-2 text-right">照片</label>
+						<div class="col-10" >
+							<input id="input_photo" name="photo" type="file" class="form-control">
+						</div>
+					</div>
+					<!-- 照片 end -->
+				</form>
+				<!-- 表单 end-->
+			</div>
+			<!-- 取消保存按钮 begin-->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light" onclick="closeproductModal()">取消</button>
+				<button type="button" class="btn btn-light" onclick="submitproduct()">保存</button>
+			</div>
+			<!-- 取消保存按钮 end-->
+		</div>
+	</div>
+</div>
+<!-- 模态框 end-->
+
+<!-- html end -->

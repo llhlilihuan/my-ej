@@ -5,17 +5,20 @@
 
 	//初始化数据，将数据添加到表格中
 	function loadData(){
-		var url = baseURL + "/category/findAll";
+		var url = baseURL + "/address/findAll";
 		$.get(url,function(result){
 			if(result.status === 200){
-				$("#category_table tbody").empty();
+				$("#address_table tbody").empty();
 				result.data.forEach(function(item){
-					$("#category_table tbody").append($(
+					$("#address_table tbody").append($(
 						`<tr>
 							<td><input type="checkbox" value="`+item.id+`"></td>
-							<td>`+item.name+`</td>
-							<td>`+item.num+`</td>
-							<td>`+item.parentId+`</td>
+							<td>`+item.province+`</td>
+							<td>`+item.city+`</td>
+							<td>`+item.area+`</td>
+							<td>`+item.address+`</td>
+							<td>`+item.telephone+`</td>
+							<td>`+item.customerId+`</td>
 							<td>
 								<a class="btn_del" href="javascript:void(0)">
 									<i class="iconfont icon-shanchu"></i>
@@ -36,26 +39,32 @@
 
 	//模态框 begin
 	//关闭模态框 begin
-	function closecategoryModal(){
-		$("#categoryModal").modal("hide");
+	function closeaddressModal(){
+		$("#addressModal").modal("hide");
 	}
 	//关闭模态框 end
 	//提交表单 begin
-	function submitcategory(){
+	function submitaddress(){
 		//1.获取参数
-		var name = $("#category_form input[name=name]").val();
-		var num = $("#category_form input[name=num]").val();
-		var parentId = $("#category_form input[name=parentId]").val();
+		var province = $("#address_form input[name=province]").val();
+		var city = $("#address_form input[name=city]").val();
+		var area = $("#address_form input[name=area]").val();
+		var address = $("#address_form input[name=address]").val();
+		var telephone = $("#address_form input[name=telephone]").val();
+		var customerId = $("#address_form input[name=customerId]").val();
 		//2.ajax
-		var url = baseURL+"/category/saveOrUpdate";
+		var url = baseURL+"/address/saveOrUpdate";
 		var data={
 			name:name,
-			num:num,
-			parentId:parentId
+			city:city,
+			area:area,
+			address,
+			telephone,
+			customerId
 		};
 		$.post(url,data,function(result){
 			if(result.status === 200){
-				closecategoryModal();
+				closeaddressModal();
 				loadData();
 			} else {
 				alert(result.message);
@@ -70,7 +79,7 @@
 		loadData();
 		//2.为添加按钮绑定事件
 		$("#btn_add").click(function(){
-			$("#categoryModal").modal("show");
+			$("#addressModal").modal("show");
 		});
 	});
 	//模态框 end
@@ -80,11 +89,11 @@
 		// 初始化加载数据
 		loadData();
 		// 为删除、修改、详情按钮绑定事件
-		$("#category_table tbody").on("click","a",function(){
+		$("#address_table tbody").on("click","a",function(){
 			if(this.className === "btn_del"){	
 				//alert("确定删除此信息吗？")
 				// 删除按钮
-				var url =baseURL+"/category/deleteById";
+				var url =baseURL+"/address/deleteById";
 				// 获取需要删除的id
 				var id = $(this).parents("tr").find("input").val();
 				console.log(id);
@@ -114,15 +123,15 @@
 
 <!-- html begin -->
 <!-- 容器 begin-->
-<div class="category">
+<div class="address">
 	<!-- 顶部按钮和搜索框 begin -->
 	<div class="top row">
 		<!-- 添加\删除\导出按钮 -->
 		<div class="btns col-3">
 			<div class="btns">
 				<button id="btn_add" class="btn btn-sm mb-3">添加</button>
-				<button id="btn_batchDel_category" class="btn btn-sm mb-3">批量删除</button>
-				<button id="btn_export_category" class="btn btn-sm mb-3">导出</button>
+				<button id="btn_batchDel" class="btn btn-sm mb-3">批量删除</button>
+				<button id="btn_export" class="btn btn-sm mb-3">导出</button>
 			</div>
 		</div>
 		<!-- 模糊查询单行表单 -->
@@ -137,13 +146,16 @@
 	</div>
 	<!-- 顶部按钮和搜索框 end -->
 	<!-- 表单 begin-->
-	<table class="table" id="category_table">
+	<table class="table" id="address_table">
 		<thead>
 			<tr>
 				<td width="60px"><input type="checkbox" id="checkbox_all"></td>
-				<td>分类名称</td>
-				<td>数量</td>
-				<td>类型</td>
+				<td>省份</td>
+				<td>城市</td>
+				<td>地区</td>
+				<td>住址</td>
+				<td>电话</td>
+				<td>客户</td>
 				<td width="200px">操作</td>
 			</tr>
 		</thead>
@@ -153,51 +165,75 @@
 </div>
 <!-- 容器 end-->
 <!-- 模态框 begin-->
-<div class="modal fade" id="categoryModal" tabindex="-1">
+<div class="modal fade" id="addressModal" tabindex="-1">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<!--模态框头部 -->
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLabel">添加分类信息</h5>
-				<button type="button" class="close" onclick="closecategoryModal()">
+				<button type="button" class="close" onclick="closeaddressModal()">
 					<span>&times;</span>
 				</button>
 			</div>
 			<!-- /模态框头部 -->
 			<div class="modal-body">
 				<!-- 表单 begin-->
-				<form action="/register" id="category_form">
-					<!-- 分类名称 begin -->
+				<form action="/register" id="address_form">
+					<!-- 省份 begin -->
 					<div class="form-group row">
-						<label for="input_name" class="col-2 text-right">分类名称</label>
+						<label for="input_province" class="col-2 text-right">省份</label>
 						<div class="col-10" >
-							<input id="input_name" name="name" type="text" class="form-control">
+							<input id="input_province" name="province" type="text" class="form-control">
 						</div>
 					</div>
-					<!-- 分类名称 end -->
-					<!-- 数量 begin -->
+					<!-- 省份 end -->
+					<!-- 城市 begin -->
 					<div class="form-group row">
-						<label for="input_num" class="col-2 text-right">数量</label>
+						<label for="input_city" class="col-2 text-right">城市</label>
 						<div class="col-10" >
-							<input id="input_num" name="num" type="num" class="form-control">
+							<input id="input_city" name="city" type="city" class="form-control">
 						</div>
 					</div>
-					<!-- 数量 end -->
-					<!-- 员工号 begin -->
+					<!-- 城市 end -->
+					<!-- 地区 begin -->
 					<div class="form-group row">
-						<label for="input_parentId" class="col-2 text-right">员工号</label>
+						<label for="input_area" class="col-2 text-right">地区</label>
 						<div class="col-10" >
-							<input id="input_parentId" name="parentId" type="text" class="form-control">
+							<input id="input_area" name="area" type="text" class="form-control">
 						</div>
 					</div>
-					<!-- 员工号 end -->
+					<!-- 地区 end -->
+					<!-- 住址 begin -->
+					<div class="form-group row">
+						<label for="input_address" class="col-2 text-right">住址</label>
+						<div class="col-10" >
+							<input id="input_address" name="address" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 住址 end -->
+					<!-- 手机号 begin -->
+					<div class="form-group row">
+						<label for="input_telephone" class="col-2 text-right">手机号</label>
+						<div class="col-10" >
+							<input id="input_telephone" name="telephone" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 手机号 end -->
+					<!-- 顾客 begin -->
+					<div class="form-group row">
+						<label for="input_customerId" class="col-2 text-right">顾客</label>
+						<div class="col-10" >
+							<input id="input_customerId" name="customerId" type="text" class="form-control">
+						</div>
+					</div>
+					<!-- 顾客 end -->
 				</form>
 				<!-- 表单 end-->
 			</div>
 			<!-- 取消保存按钮 begin-->
 			<div class="modal-footer">
-				<button type="button" class="btn btn-light" onclick="closecategoryModal()">取消</button>
-				<button type="button" class="btn btn-light" onclick="submitcategory()">保存</button>
+				<button type="button" class="btn btn-light" onclick="closeaddressModal()">取消</button>
+				<button type="button" class="btn btn-light" onclick="submitaddress()">保存</button>
 			</div>
 			<!-- 取消保存按钮 end-->
 		</div>

@@ -34,6 +34,9 @@ $(function(){
 			case "评论管理":
 				$("span#span_c").text("评论管理");
 				break;
+			case "地址管理":
+				$("span#span_c").text("地址管理");
+				break;
 		}
 		var url = $(this).attr("url");
 		$(".left_nav>li").removeClass("current");

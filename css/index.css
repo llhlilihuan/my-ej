@@ -1,33 +1,37 @@
-html,body,.container {
+html,body,.container-fluid {
 	height: 100%;
 }
-.container {
-
+*{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.container-fluid{
+	padding: 0 !important;
+	margin: 0 !important;
+	overflow: hidden;
 }
 /*左侧导航栏*/
-.container > .left {
+.container-fluid > .left {
 	width: 220px;
-	background-color: #8db33a;
+	background-color: #3C8A58;
 	height: 100%;
 	float: left;
 	color: #fff;
 }
-.container > .left a {
+.container-fluid > .left a {
 	color: #fff;
 	font-size: 16px;
 	margin-left: 15px;
 }
 /*标题首页*/
 .left > .title {
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: bold;
 	text-align: center;
 	line-height: 4em;
 	border-bottom: 1px solid #ededed;
 	cursor:pointer;
-}
-.left >ul.left_nav {
-
 }
 .left >ul.left_nav > li{
 	text-align: center;
@@ -35,19 +39,19 @@ html,body,.container {
 	border-bottom: 1px solid #ededed
 }
 .left >ul.left_nav > li.current{
-	background-color: #424242;
+	background-color: #284D33;
 }
 
 
 /*右侧*/
-.container > .right {
+.container-fluid > .right {
 	box-sizing: border-box;
 	height: 100%;
 	background-color: #ededed;
 	margin-left: 220px;
-	padding: 10px 20px;
+	padding: 20px 20px;
 }
-.container > .right >.content {
+.container-fluid > .right >.content {
 	border-radius: 5px;
 	background-color: #ffffff;
 	height: 100%;
@@ -55,7 +59,7 @@ html,body,.container {
 	box-sizing: border-box;
 }
 /*头部栏*/
-.container > .right >.content >.mb_nav{
+.container-fluid > .right >.content >.mb_nav{
 	border-bottom: 1px solid #ccc;
 	line-height: 2.5em;
 	margin-bottom: .5em;
@@ -63,18 +67,21 @@ html,body,.container {
 }
 .mb_nav span{
 	font-size: 14px;
-	color: #807d7d;
+	color: #3C8A58;
 }
 .mb_nav .span_m{
 	font-size: 18px;
 }
 
-/*主体内容*/
-.container > .right >.content >.wrapper{
+
+.container-fluid > .right >.content >.wrapper{
 	box-sizing: border-box;
 	padding: 1em;
 }
-
+.right .footer{
+	font-size: 16px;
+	color: gray;
+}
 
 
 
